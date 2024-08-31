@@ -1,0 +1,36 @@
+.book-view-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .book-details {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .book-photo {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+  }
+  
+  .book-info {
+    flex: 1;
+  }
+  
+  .get-book-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .get-book-button:hover {
+    background-color: #0056b3;
+  }
+  

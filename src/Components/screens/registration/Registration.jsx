@@ -28,8 +28,8 @@ function Registration() {
         }
       })
       .catch((error) => {
-        console.error(error.response.data);
-        setText(error.response.data);
+        console.error(error.response.data.message);
+        setText(error.response.data.message);
       });
   };
 
@@ -75,10 +75,9 @@ function Registration() {
             <div>
               <h2>Ты сможешь:</h2>
               <div>
-                <p> - Просматривать показатели товара</p>
-                <p> - Подписываться на товар</p>
-                <p> - Анализировать цену</p>
-                <p> - Получать платный анализ</p>
+                <p> - Просматривать книги</p>
+                <p> - Брать книги в аренду</p>
+                <p> - Сортировать список книг</p>
               </div>
             </div>
 

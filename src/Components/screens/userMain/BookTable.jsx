@@ -171,7 +171,7 @@ function BookTable() {
                     <td>{book.genre}</td>
                     <td>{book.description}</td>
                     <td>{book.isbn}</td>
-                    <td>{book.isAvailible ? 'Есть в наличии' : 'Нет в наличии'}</td>
+                    <td>{book.isAvailable ? 'Есть в наличии' : 'Нет в наличии'}</td>
                   </tr>
                 );
               })}

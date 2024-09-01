@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import ProfileMenu from '../../ProfileMenu/ProfileMenu';
 import NotificationList from '../../NotificationList/NotificationLIst';
 import './BookView.css';
@@ -14,6 +14,7 @@ function BookView() {
     const [typeOfIcon, setTypeOfIcon] = useState(false);
     const [typeOfNotifications, setTypeOfNotifications] = useState(false);
     const [notificationCount, setNotificationCount] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchBookDetails = async () => {
@@ -67,9 +68,58 @@ function BookView() {
         setTypeOfNotifications(!typeOfNotifications);
     }
 
-    const handleGetBook = () => {
-        console.log('Получить книгу пользователем');
+    const handleGetBook = async () => {
+        if (!book.isAvailable) {
+            setError('Книга недоступна для получения.');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('userId'); // Получите userId из localStorage
+
+            if (!token || !userId) {
+                setError('Пользователь не авторизован.');
+                return;
+            }
+
+            const now = new Date();
+            const dateTaken = now.toISOString(); // Текущая дата
+            const dateReturn = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000).toISOString(); // Дата возврата через 14 дней
+
+            const response = await axios.post(
+                'https://localhost:44350/api/UserBook',
+                {
+                    userId,
+                    bookId: book.id,
+                    dateTaken,
+                    dateReturn,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                navigate('/userProfile'); // Перенаправление на страницу профиля
+            } else {
+                setError('Ошибка при получении книги. Попробуйте снова.');
+            }
+        } catch (error) {
+            console.error('Ошибка при получении книги:', error);
+            setError('Ошибка при получении книги. Проверьте консоль для подробностей.');
+        }
     };
+
+    // Проверка значения book.isAvailible
+    useEffect(() => {
+        if (book) {
+            console.log(`Книга доступна: ${book.isAvailable}`);
+        }
+    }, [book]);
 
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p className="error-message">{error}</p>;
@@ -117,8 +167,12 @@ function BookView() {
                             <p><strong>Жанр:</strong> {book.genre}</p>
                             <p><strong>Описание:</strong> {book.description}</p>
                             <p><strong>ISBN:</strong> {book.isbn}</p>
-                            <p><strong>Наличие:</strong> {book.isAvailible ? 'Есть в наличии' : 'Нет в наличии'}</p>
-                            <button onClick={handleGetBook} className="get-book-button">
+                            <p><strong>Наличие:</strong> {book.isAvailable ? 'Есть в наличии' : 'Нет в наличии'}</p>
+                            <button
+                                onClick={handleGetBook}
+                                className="get-book-button"
+                                disabled={!book.isAvailable} // Сделать кнопку недоступной, если книга не в наличии
+                            >
                                 Получить книгу
                             </button>
                         </div>

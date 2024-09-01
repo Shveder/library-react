@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import ProfileMenu from '../../ProfileMenu/ProfileMenu';
 import NotificationList from '../../NotificationList/NotificationLIst';
-import './AuthorView.css'; // Создайте и добавьте стили для AuthorView
+import './AuthorView.css';
 
 function AuthorView() {
     const { id } = useParams();
@@ -35,17 +35,25 @@ function AuthorView() {
                 });
 
                 if (authorResponse.data && authorResponse.data.data) {
-                    setAuthor(authorResponse.data.data);
+                    const authorData = authorResponse.data.data;
+                    setAuthor({
+                        name: `${authorData.name} ${authorData.surname}`,
+                        birthDate: new Date(authorData.birthday).toLocaleDateString(),
+                        country: authorData.country,
+                    });
 
                     // Fetch books of the author
-                    const booksResponse = await axios.get(`https://localhost:44350/api/Book/GetByAuthor?{id}`, {
+                    const booksResponse = await axios.get(`https://localhost:44350/api/Book/GetByAuthor?authorId=${id}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
 
                     if (booksResponse.data && booksResponse.data.data) {
-                        setBooks(booksResponse.data.data);
+                        // Проверка на тип данных, если книга одна — создаем массив из одного элемента
+                        const bookData = booksResponse.data.data;
+                        const booksArray = Array.isArray(bookData) ? bookData : [bookData];
+                        setBooks(booksArray);
                     } else {
                         setError('Ошибка получения данных о книгах автора.');
                     }
@@ -78,7 +86,7 @@ function AuthorView() {
         <>
             {typeOfIcon && <ProfileMenu />}
             {typeOfNotifications && <NotificationList updateNotificationCount={setNotificationCount} />}
-            <header>
+            <header className="header">
                 <div className="logo">
                     <Link to="/userMain"><p>Library</p></Link>
                 </div>
@@ -108,7 +116,7 @@ function AuthorView() {
                     <div className="author-details">
                         <h2>{author.name}</h2>
                         <p><strong>Дата рождения:</strong> {author.birthDate || 'Неизвестно'}</p>
-                        <p><strong>Биография:</strong> {author.biography || 'Информация отсутствует'}</p>
+                        <p><strong>Страна:</strong> {author.country || 'Информация отсутствует'}</p>
                     </div>
                 )}
                 <h3>Книги автора</h3>

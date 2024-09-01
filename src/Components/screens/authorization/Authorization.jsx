@@ -81,7 +81,7 @@ function Authorization() {
               alt="Иконка человека"
               className="peopleLogo"
             />
-            <h2>Привет, странник!</h2>
+            <h2>Привет!</h2>
             <p>Введи свои данные и получи полный доступ ко всем возможностям</p>
             <Link to="/registration">
               <button>Регистрация</button>

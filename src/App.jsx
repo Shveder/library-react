@@ -7,6 +7,7 @@ import AuthProvider from './providers/AuthProvider';
 import BookView from './Components/screens/bookView/BookView';
 import UserMain from './Components/screens/userMain/UserMain';
 import AuthorView from './Components/screens/authorView/AuthorView';
+import UserProfile from './Components/screens/userProfile/UserProfile';
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
         <Route path='/bookView/:id' element={<BookView />} />
         <Route path='/author/:id' element={<AuthorView />} />
         <Route element={<Registration />} path='/adminMain' />
+        <Route element={<UserProfile />} path='/userProfile' />
         <Route path="/" element={<Navigate to="/authorization" replace />} />
         <Route path='*' element={<div>Not found</div>} />
       </Routes>

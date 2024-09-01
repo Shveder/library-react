@@ -8,6 +8,8 @@ import BookView from './Components/screens/bookView/BookView';
 import UserMain from './Components/screens/userMain/UserMain';
 import AuthorView from './Components/screens/authorView/AuthorView';
 import UserProfile from './Components/screens/userProfile/UserProfile';
+import AdminMain from './Components/screens/adminMain/AdminMain';
+import EditBook from './Components/screens/editBook/EditBook';
 
 
 const App = () => {
@@ -19,7 +21,8 @@ const App = () => {
         <Route element={<UserMain />} path='/userMain' />
         <Route path='/bookView/:id' element={<BookView />} />
         <Route path='/author/:id' element={<AuthorView />} />
-        <Route element={<Registration />} path='/adminMain' />
+        <Route path="/editBook/:bookId" element={<EditBook />} />
+        <Route element={<AdminMain />} path='/adminMain' />
         <Route element={<UserProfile />} path='/userProfile' />
         <Route path="/" element={<Navigate to="/authorization" replace />} />
         <Route path='*' element={<div>Not found</div>} />

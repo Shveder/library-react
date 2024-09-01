@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../providers/AuthProvider";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import './UserMain.css';
 import ProfileMenu from "../../ProfileMenu/ProfileMenu.jsx";
 import NotificationList from "../../NotificationList/NotificationLIst.jsx";
@@ -9,13 +9,12 @@ import BookTable from "./BookTable.jsx";
 
 function UserMain() {
     const { user, setUser } = useContext(AuthContext);
-    const [books, setBooks] = useState([]);
+    const [books] = useState([]);
     const [typeOfIcon, setTypeOfIcon] = useState(false);
     const [typeOfNotifications, setTypeOfNotifications] = useState(false);
     const [notificationCount, setNotificationCount] = useState("");
     const [loading, setLoading] = useState(true); // состояние для отслеживания загрузки
     const [error, setError] = useState(''); // состояние для ошибок
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {

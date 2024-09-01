@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './BookTable.css';
 
+const PAGE_SIZE = 10; // Количество книг на одной странице
+
 function BookTable() {
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
@@ -13,6 +15,7 @@ function BookTable() {
   const [sortOrder, setSortOrder] = useState('asc');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -74,6 +77,7 @@ function BookTable() {
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
+    setCurrentPage(1); // Сбросить на первую страницу при поиске
   };
 
   const handleSort = (field) => {
@@ -103,6 +107,16 @@ function BookTable() {
       if (fieldA > fieldB) return sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
+
+  // Пагинация
+  const totalPages = Math.ceil(filteredBooks.length / PAGE_SIZE);
+  const paginatedBooks = filteredBooks.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   return (
     <div className="book-table-container">
@@ -152,12 +166,12 @@ function BookTable() {
               </tr>
             </thead>
             <tbody>
-              {filteredBooks.map((book) => {
+              {paginatedBooks.map((book) => {
                 const author = authors.find(author => author.id === book.authorId);
                 return (
                   <tr key={book.id}>
                     <td>
-                      <a href={`/bookView/${book.id}`}rel="noopener noreferrer">
+                      <a href={`/bookView/${book.id}`} rel="noopener noreferrer">
                         {book.bookName}
                       </a>
                     </td>
@@ -177,6 +191,21 @@ function BookTable() {
               })}
             </tbody>
           </table>
+          <div className="pagination">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              &laquo; Назад
+            </button>
+            <span>Страница {currentPage} из {totalPages}</span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Вперёд &raquo;
+            </button>
+          </div>
         </>
       )}
     </div>

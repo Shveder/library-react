@@ -11,7 +11,7 @@ function Authorization() {
   const [login, setLogin] = useState('');
   const [errorMessage, setText] = useState('');
   const navigate = useNavigate();
-  const {setUser } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
 
   const handleAuth = (event) => {
     event.preventDefault();
@@ -30,12 +30,14 @@ function Authorization() {
 
           // Сохраняем токен для дальнейшего использования
           localStorage.setItem('token', token);
-          localStorage.setItem('userId', decoded.id);
+
 
           if (decoded.role === "admin") {
+            localStorage.setItem('adminId', decoded.id);
             console.log("Это админ");
             navigate("/adminMain");
           } else if (decoded.role === "user") {
+            localStorage.setItem('userId', decoded.id);
             console.log("Это юзер");
             navigate("/userMain");
           }

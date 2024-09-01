@@ -1,0 +1,92 @@
+.manage-authors-container {
+    padding: 20px;
+  }
+  
+  .add-author-form {
+    margin-bottom: 20px;
+  }
+  
+  .add-author-form input {
+    display: block;
+    margin: 5px 0;
+    padding: 8px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .add-author-form button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .add-author-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .authors-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .authors-table th,
+  .authors-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .authors-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .authors-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .authors-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 0 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .delete-modal {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+  }
+  
+  .delete-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+  }
+  

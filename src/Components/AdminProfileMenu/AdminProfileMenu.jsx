@@ -1,6 +1,7 @@
 import React, {useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
+import './AdminProfileMenu.css'
 
 function AdminProfileMenu()
 {

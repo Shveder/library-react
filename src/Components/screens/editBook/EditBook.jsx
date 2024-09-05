@@ -158,6 +158,7 @@ function EditBook() {
           type="text"
           name="bookName"
           placeholder="Название книги"
+          maxLength={50}
           value={book.bookName}
           onChange={handleInputChange}
         />
@@ -165,6 +166,7 @@ function EditBook() {
           type="text"
           name="isbn"
           placeholder="ISBN"
+          maxLength={50}
           value={book.isbn}
           onChange={handleInputChange}
         />
@@ -172,12 +174,14 @@ function EditBook() {
           type="text"
           name="genre"
           placeholder="Жанр"
+          maxLength={10}
           value={book.genre}
           onChange={handleInputChange}
         />
         <textarea
           name="description"
           placeholder="Описание"
+          maxLength={250}
           value={book.description}
           onChange={handleInputChange}
         />

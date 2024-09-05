@@ -156,6 +156,7 @@ function ManageBooks() {
           type="text"
           name="isbn"
           placeholder="ISBN"
+          maxLength={50}
           value={newBook.isbn}
           onChange={handleInputChange}
         />
@@ -163,6 +164,7 @@ function ManageBooks() {
           type="text"
           name="bookName"
           placeholder="Название книги"
+          maxLength={50}
           value={newBook.bookName}
           onChange={handleInputChange}
         />
@@ -170,12 +172,14 @@ function ManageBooks() {
           type="text"
           name="genre"
           placeholder="Жанр"
+          maxLength={10}
           value={newBook.genre}
           onChange={handleInputChange}
         />
         <textarea
           name="description"
           placeholder="Описание"
+          maxLength={250}
           value={newBook.description}
           onChange={handleInputChange}
         />

@@ -130,6 +130,7 @@ function BookTable() {
             placeholder="Поиск по названию, жанру, описанию..."
             value={searchQuery}
             onChange={handleSearch}
+            maxLength={30}
             className="search-input"
           />
           <div className="filters">

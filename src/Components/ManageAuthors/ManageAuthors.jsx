@@ -133,12 +133,14 @@ function ManageAuthors() {
           type="text"
           name="name"
           placeholder="Имя"
+          maxLength={30}
           value={newAuthor.name}
           onChange={handleInputChange}
         />
         <input
           type="text"
           name="surname"
+          maxLength={30}
           placeholder="Фамилия"
           value={newAuthor.surname}
           onChange={handleInputChange}
@@ -153,6 +155,7 @@ function ManageAuthors() {
         <input
           type="text"
           name="country"
+          maxLength={30}
           placeholder="Страна"
           value={newAuthor.country}
           onChange={handleInputChange}

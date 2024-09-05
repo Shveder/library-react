@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import ProfileMenu from '../../ProfileMenu/ProfileMenu';
-import NotificationList from '../../NotificationList/NotificationLIst';
+import NotificationList from '../../NotificationList/NotificationList';
 import './AuthorView.css';
 
 function AuthorView() {

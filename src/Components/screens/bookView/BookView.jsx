@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import ProfileMenu from '../../ProfileMenu/ProfileMenu';
-import NotificationList from '../../NotificationList/NotificationLIst';
+import NotificationList from '../../NotificationList/NotificationList';
 import './BookView.css';
 
 function BookView() {
@@ -14,6 +14,7 @@ function BookView() {
     const [typeOfIcon, setTypeOfIcon] = useState(false);
     const [typeOfNotifications, setTypeOfNotifications] = useState(false);
     const [notificationCount, setNotificationCount] = useState("");
+    const [getBookError, setGetBookError] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -70,7 +71,7 @@ function BookView() {
 
     const handleGetBook = async () => {
         if (!book.isAvailable) {
-            setError('Книга недоступна для получения.');
+            setGetBookError('Книга недоступна для получения.');
             return;
         }
 
@@ -106,15 +107,15 @@ function BookView() {
             if (response.status === 200) {
                 navigate('/userProfile'); // Перенаправление на страницу профиля
             } else {
-                setError('Ошибка при получении книги. Попробуйте снова.');
+                setGetBookError('Ошибка при получении книги. Попробуйте снова.');
             }
         } catch (error) {
             console.error('Ошибка при получении книги:', error);
-            setError('Ошибка при получении книги. Проверьте консоль для подробностей.');
+            setGetBookError('Ошибка при получении книги. Проверьте консоль для подробностей.');
         }
     };
 
-    // Проверка значения book.isAvailible
+    // Проверка значения book.isAvailable
     useEffect(() => {
         if (book) {
             console.log(`Книга доступна: ${book.isAvailable}`);
@@ -168,10 +169,10 @@ function BookView() {
                             <p><strong>Описание:</strong> {book.description}</p>
                             <p><strong>ISBN:</strong> {book.isbn}</p>
                             <p><strong>Наличие:</strong> {book.isAvailable ? 'Есть в наличии' : 'Нет в наличии'}</p>
+                            {getBookError && <p className="error-message">{getBookError}</p>}
                             <button
                                 onClick={handleGetBook}
                                 className="get-book-button"
-                                disabled={!book.isAvailable} // Сделать кнопку недоступной, если книга не в наличии
                             >
                                 Получить книгу
                             </button>

@@ -51,6 +51,7 @@
   
   .pagination button {
     padding: 5px 10px;
+    color: black;
     border: 1px solid #ddd;
     background: none;
     cursor: pointer;

@@ -45,7 +45,6 @@ function BookTable() {
 
       if (response.data && response.data.data) {
         const booksData = response.data.data.books;
-        console.log(booksData);
         setBooks(booksData);
 
         // Получение уникальных ID авторов из книг

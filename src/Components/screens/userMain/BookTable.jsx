@@ -11,109 +11,87 @@ function BookTable() {
   const [selectedAuthor, setSelectedAuthor] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortField, setSortField] = useState('');
-  const [sortOrder, setSortOrder] = useState('asc');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setError('Токен не найден.');
-          setLoading(false);
-          return;
-        }
-
-        // Запрос на получение книг
-        const response = await axios.get('https://localhost:44350/api/Book/GetAll', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.data && response.data.data) {
-          const booksData = response.data.data;
-          setBooks(booksData);
-
-          // Получение уникальных ID авторов из книг
-          const authorIds = [...new Set(booksData.map(book => book.authorId))];
-
-          // Запросы на получение авторов по их ID
-          const authorPromises = authorIds.map(id =>
-            axios.get(`https://localhost:44350/api/Author/${id}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-          );
-
-          // Ожидание завершения всех запросов к авторам
-          const authorResponses = await Promise.all(authorPromises);
-
-          // Извлечение данных авторов из ResponseDto
-          const authorsData = authorResponses.map(res => res.data?.data).filter(author => author);
-
-          // Обновление состояния авторов и жанров
-          setAuthors(authorsData);
-          setGenres([...new Set(booksData.map(book => book.genre))]);
-        } else {
-          setError('Ошибка получения данных о книгах.');
-        }
-      } catch (error) {
-        console.error('Ошибка при получении данных:', error);
-        setError('Ошибка при получении данных. Проверьте консоль для подробностей.');
-      } finally {
+  const fetchBooks = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Токен не найден.');
         setLoading(false);
+        return;
       }
-    };
 
+      // Формирование параметров запроса
+      const params = {
+        pageNumber: currentPage,
+        pageSize: PAGE_SIZE,
+        authorId: selectedAuthor || undefined,
+        genre: selectedGenre || undefined,
+        search: searchQuery || undefined,
+      };
+
+      // Запрос на получение книг с фильтрацией, сортировкой и пагинацией
+      const response = await axios.get('https://localhost:44350/api/Book/GetAllFiltered', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params,
+      });
+
+      if (response.data && response.data.data) {
+        const booksData = response.data.data.books;
+        console.log(booksData);
+        setBooks(booksData);
+
+        // Получение уникальных ID авторов из книг
+        const authorIds = [...new Set(booksData.map(book => book.authorId))];
+
+        // Запросы на получение авторов по их ID
+        const authorPromises = authorIds.map(id =>
+          axios.get(`https://localhost:44350/api/Author/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        );
+
+        // Ожидание завершения всех запросов к авторам
+        const authorResponses = await Promise.all(authorPromises);
+
+        // Извлечение данных авторов из ResponseDto
+        const authorsData = authorResponses.map(res => res.data?.data).filter(author => author);
+
+        // Обновление состояния авторов и жанров
+        setAuthors(authorsData);
+        setGenres([...new Set(booksData.map(book => book.genre))]);
+      } else {
+        setError('Ошибка получения данных о книгах.');
+      }
+    } catch (error) {
+      console.error('Ошибка при получении данных:', error);
+      setError('Ошибка при получении данных. Проверьте консоль для подробностей.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Запуск запроса при изменении фильтров, поиска, сортировки или номера страницы
+  useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [currentPage, selectedAuthor, selectedGenre, searchQuery]);
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
     setCurrentPage(1); // Сбросить на первую страницу при поиске
   };
 
-  const handleSort = (field) => {
-    const order = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
-    setSortField(field);
-    setSortOrder(order);
-  };
-
-  const filteredBooks = books
-    .filter((book) => {
-      const author = authors.find(author => author.id === book.authorId);
-      const matchesSearch = (
-        book.bookName.toLowerCase().includes(searchQuery) ||
-        book.genre.toLowerCase().includes(searchQuery) ||
-        book.description.toLowerCase().includes(searchQuery) ||
-        (author && author.name.toLowerCase().includes(searchQuery))
-      );
-      const matchesAuthor = !selectedAuthor || (author && author.id === selectedAuthor);
-      const matchesGenre = !selectedGenre || book.genre === selectedGenre;
-      return matchesSearch && matchesAuthor && matchesGenre;
-    })
-    .sort((a, b) => {
-      if (!sortField) return 0;
-      const fieldA = a[sortField].toLowerCase();
-      const fieldB = b[sortField].toLowerCase();
-      if (fieldA < fieldB) return sortOrder === 'asc' ? -1 : 1;
-      if (fieldA > fieldB) return sortOrder === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-  // Пагинация
-  const totalPages = Math.ceil(filteredBooks.length / PAGE_SIZE);
-  const paginatedBooks = filteredBooks.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
+   const handlePageChange = (newPage) => {
+    if (newPage >= 1) {
       setCurrentPage(newPage);
     }
   };
@@ -127,7 +105,7 @@ function BookTable() {
         <>
           <input
             type="text"
-            placeholder="Поиск по названию, жанру, описанию..."
+            placeholder="Поиск по названию, описанию..."
             value={searchQuery}
             onChange={handleSearch}
             maxLength={30}
@@ -154,12 +132,12 @@ function BookTable() {
           <table className="book-table">
             <thead>
               <tr>
-                <th onClick={() => handleSort('bookName')}>
-                  Название {sortField === 'bookName' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                <th >
+                  Название 
                 </th>
                 <th>Автор</th>
-                <th onClick={() => handleSort('genre')}>
-                  Жанр {sortField === 'genre' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                <th>
+                  Жанр
                 </th>
                 <th>Описание</th>
                 <th>ISBN</th>
@@ -167,7 +145,7 @@ function BookTable() {
               </tr>
             </thead>
             <tbody>
-              {paginatedBooks.map((book) => {
+              {books.map((book) => {
                 const author = authors.find(author => author.id === book.authorId);
                 return (
                   <tr key={book.id}>
@@ -199,10 +177,10 @@ function BookTable() {
             >
               &laquo; Назад
             </button>
-            <span>Страница {currentPage} из {totalPages}</span>
+            <span>Страница {currentPage}</span>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
+              disabled={books.length < PAGE_SIZE}
             >
               Вперёд &raquo;
             </button>
